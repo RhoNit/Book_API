@@ -19,7 +19,8 @@ impl Database {
     }
 
     pub fn run(&mut self) {
-        self.add_a_book();
+        // self.add_a_book();
+        self.display_all_books();
     }
 
     fn add_a_book(&mut self) {
@@ -46,5 +47,20 @@ impl Database {
             .values(&new_book)
             .get_result::<Book>(&mut self.database_connection)
             .expect("Error adding a book");
+    }
+
+    fn display_all_books(&mut self) {
+        use schema::book_master::dsl::*;
+        
+        let books = book_master
+            .load::<Book>(&mut self.database_connection)
+            .expect("Error while displaying all books");
+        println!("\n------------DISPLAY ALL BOOKS-------------\n");
+        for book in books {
+            println!("Title: {}", book.title);
+            println!("Author: {}", book.author);
+            println!("Price: {}", book.price);
+            println!("-----------------------------");
+        }
     }
 }
