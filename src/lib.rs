@@ -3,7 +3,7 @@ mod schema;
 
 use std::io;
 
-use diesel::{Connection, PgConnection, RunQueryDsl};
+use diesel::{query_dsl::methods::FilterDsl, Connection, ExpressionMethods, PgConnection, QueryDsl, RunQueryDsl};
 use model::{Book, NewBook};
 
 pub struct Database {
@@ -20,7 +20,8 @@ impl Database {
 
     pub fn run(&mut self) {
         // self.add_a_book();
-        self.display_all_books();
+        // self.display_all_books();
+        self.get_book_by_id();
     }
 
     fn add_a_book(&mut self) {
@@ -62,5 +63,24 @@ impl Database {
             println!("Price: {}", book.price);
             println!("-----------------------------");
         }
+    }
+
+    fn get_book_by_id(&mut self) {
+        use schema::book_master::dsl::*;
+
+        println!("Enter the id of the book, you wanna search: ");
+        let mut book_id = String::new();
+        io::stdin().read_line(&mut book_id).unwrap();
+        let book_id = book_id.trim().parse::<i32>().unwrap();
+
+        let book = book_master
+            .find(book_id)
+            .get_result::<Book>(&mut self.database_connection)
+            .expect("Error getting a book by id");
+
+        println!("\n----------BOOK DETAILS (ID #{})-----------\n", book_id);
+        println!("Title: {}", book.title);
+        println!("Author: {}", book.author);
+        println!("Price: {}", book.price);
     }
 }
