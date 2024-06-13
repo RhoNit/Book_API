@@ -1,0 +1,6 @@
+CREATE TABLE book_master (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(50) NOT NULL,
+    author VARCHAR(50) NOT NULL,
+    price DOUBLE PRECISION NOT NULL
+)

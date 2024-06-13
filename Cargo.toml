@@ -1,0 +1,9 @@
+[package]
+name = "book_api"
+version = "0.1.0"
+edition = "2021"
+author = "Ranit Biswas <ranitbiswas.cs@gmail.com>"
+
+[dependencies]
+diesel = { version = "2.2.1", features = ["postgres"] }
+dotenv = "0.15.0"
