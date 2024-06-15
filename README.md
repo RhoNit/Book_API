@@ -6,14 +6,15 @@
 
 ## Project Setup
 ### 1. Clone the repository
-`git clone --depth 1 -b master https://github.com/RhoNit/Book_API`
+`git clone --depth 1 -b master https://github.com/RhoNit/Book_API`<br>
+`cd Book_API`
 <hr>
 
-### 2. Installation of crates/dependencies
+### 2. Setup Diesel CLI & installation of crates/dependencies
 - If you don't have `diesel_cli` installed in your machine, please install it first:<br>
   `cargo install diesel_cli --no-default-features --features postgres`
 - Install all the crates defined inside `Cargo.toml`<br>
-  `cargo add <crate_name> -F <dependency_features>`
+  `cargo build`
 <hr>
 
 ### 3. Define Database Config inside .env & Diesel Setup
@@ -22,8 +23,8 @@
 <hr>
 
 ### 4. Generate migration and update up.sql and down.sql file content
-- Generate migration:<br> `diesel migration generate create_book`
-- This will generate your migration folder and inside that you have to update the contents of up.sql and down.sql
+- Create `book` table by adding a migration:<br> `diesel migration generate create_book`
+- This will generate your migration folder and inside that you have to update the contents of `up.sql` and `down.sql`
 <hr>
 
 ### 5. Run migration
