@@ -5,6 +5,7 @@ use std::io;
 
 use diesel::{query_dsl::methods::FilterDsl, Connection, ExpressionMethods, PgConnection, QueryDsl, RunQueryDsl};
 use model::{Book, NewBook};
+use schema::book_master::author;
 
 pub struct Database {
     pub database_connection: PgConnection,
@@ -20,8 +21,9 @@ impl Database {
 
     pub fn run(&mut self) {
         // self.add_a_book();
-        // self.display_all_books();
-        self.get_book_by_id();
+        self.display_all_books();
+        // self.get_book_by_id();
+        self.update_book();
     }
 
     fn add_a_book(&mut self) {
@@ -33,16 +35,16 @@ impl Database {
         let title = title.trim();
 
         println!("Enter the AUTHOR of the book: ");
-        let mut author = String::new();
-        io::stdin().read_line(&mut author).unwrap();
-        let author = author.trim();
+        let mut author_name = String::new();
+        io::stdin().read_line(&mut author_name).unwrap();
+        let author_name = author_name.trim();
 
         println!("Enter the price of the book: ");
         let mut price = String::new();
         io::stdin().read_line(&mut price).unwrap();
         let price = price.trim().parse::<f64>().unwrap();
 
-        let new_book = NewBook::new(title.to_string(), author.to_string(), price);
+        let new_book = NewBook::new(title.to_string(), author_name.to_string(), price);
 
         diesel::insert_into(book_master::table)
             .values(&new_book)
@@ -82,5 +84,36 @@ impl Database {
         println!("Title: {}", book.title);
         println!("Author: {}", book.author);
         println!("Price: {}", book.price);
+    }
+
+    fn update_book(&mut self) {
+        use schema::book_master::dsl::*;
+
+        println!("Enter the id of the book, which you wanna update: ");
+        let mut book_id = String::new();
+        io::stdin().read_line(&mut book_id).unwrap();
+        let book_id = book_id.trim().parse::<i32>().unwrap();
+        
+        println!("Update the title of the book: ");
+        let mut updated_title = String::new();
+        io::stdin().read_line(&mut updated_title).unwrap();
+        
+        println!("Update the author of the book: ");
+        let mut updated_author = String::new();
+        io::stdin().read_line(&mut updated_author).unwrap();
+
+        println!("Update the price of the book: ");
+        let mut updated_price = String::new();
+        io::stdin().read_line(&mut updated_price).unwrap();
+        let updated_price = updated_price.trim().parse::<f64>().unwrap();
+
+        diesel::update(book_master.find(book_id))
+            .set((
+                title.eq(updated_title.trim()),
+                author.eq(updated_author.trim()),
+                price.eq(updated_price)
+            ))
+            .execute(&mut self.database_connection)
+            .expect("Error in updating book");
     }
 }
